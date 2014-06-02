@@ -83,6 +83,14 @@ afterEvaluate { project ->
                         }
                     }
                 }
+                
+                //Remove all dependencies from pom
+                pom.whenConfigured { pom ->
+                    if(project.hasProperty('POM_WITHOUT_DEPENDENCIES') && POM_WITHOUT_DEPENDENCIES == "true") {
+                        pom.dependencies = [];
+                    }
+                }
+                
             }
         }
     }
@@ -94,7 +102,7 @@ afterEvaluate { project ->
 
     task androidJavadocs(type: Javadoc) {
         failOnError false
-        classpath += project.files(android.plugin.getRuntimeJarList().join(File.pathSeparator))
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
         source = android.sourceSets.main.allJava
     }
 
